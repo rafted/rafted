@@ -1,7 +1,6 @@
-use bytes::Buf;
+use bytes::{Buf, BufMut};
 
-const SEGMENT_BITS: u8 = 0x7F;
-const CONTINUE_BIT: u8 = 0x80;
+use super::{CONTINUE_BIT, SEGMENT_BITS};
 
 pub type VarInt = i32;
 
@@ -28,4 +27,18 @@ pub fn read_varint(mut buf: &[u8]) -> Result<VarInt, String> {
     }
 
     Ok(value)
+}
+
+pub fn write_varint(mut buf: &mut Vec<u8>, mut value: VarInt) {
+    loop {
+        if (value & (SEGMENT_BITS as i32)) == 0 {
+            buf.put_i32(value);
+            break;
+        }
+
+        buf.put_i32((value & SEGMENT_BITS as i32) | CONTINUE_BIT as i32);
+
+        // value >>>= 7;
+        value >>= 7;
+    }
 }
