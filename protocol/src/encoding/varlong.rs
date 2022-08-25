@@ -12,9 +12,9 @@ pub fn read_varlong(mut buf: &[u8]) -> Result<VarLong, String> {
     loop {
         current_byte = buf.get_u8();
 
-        value |= ((current_byte & SEGMENT_BITS) << position) as i64;
+        value |= (current_byte as i64 & SEGMENT_BITS as i64) << position;
 
-        if (current_byte & CONTINUE_BIT) == 0 {
+        if (current_byte as i32 & CONTINUE_BIT) == 0 {
             break;
         }
 
@@ -22,7 +22,7 @@ pub fn read_varlong(mut buf: &[u8]) -> Result<VarLong, String> {
 
         if position >= 64 {
             // TODO: make const or something
-            return Err("VarLong is too big".to_string());
+            return Err("varlong is too big".to_string());
         }
     }
 
@@ -31,14 +31,13 @@ pub fn read_varlong(mut buf: &[u8]) -> Result<VarLong, String> {
 
 pub fn write_varlong(mut buf: &mut Vec<u8>, mut value: VarLong) {
     loop {
-        if (value & (SEGMENT_BITS as i64)) == 0 {
-            buf.put_i64(value);
+        if (value & !(SEGMENT_BITS as i64)) == 0 {
+            buf.put_u8(value as u8);
             break;
         }
 
-        buf.put_i64((value & SEGMENT_BITS as i64) | CONTINUE_BIT as i64);
+        buf.put_u8((value as u8 & SEGMENT_BITS as u8) | CONTINUE_BIT as u8);
 
-        // value >>>= 7;
         value >>= 7;
     }
 }
