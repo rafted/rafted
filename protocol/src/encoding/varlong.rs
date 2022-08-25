@@ -44,6 +44,8 @@ pub fn write_varlong(mut buf: &mut Vec<u8>, mut value: VarLong) {
 
 #[cfg(test)]
 mod tests {
+    use crate::encoding::varlong::read_varlong;
+
     use super::write_varlong;
 
     #[test]
@@ -59,5 +61,20 @@ mod tests {
         write_varlong(&mut buf, -9223372036854775808);
         assert_eq!(buf, vec![0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x01]);
     }
+
+    #[test]
+    fn read_positive() {
+        let mut buf = vec![0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f];
+
+        assert_eq!(read_varlong(&mut buf).unwrap(), 9223372036854775807);
+    }
+
+    #[test]
+    fn read_negative() {
+        let mut buf = vec![0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x01];
+
+        assert_eq!(read_varlong(&mut buf).unwrap(), -9223372036854775808);
+    }
+
 }
 

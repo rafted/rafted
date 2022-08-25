@@ -46,7 +46,7 @@ pub fn write_varint(mut buf: &mut Vec<u8>, mut value: VarInt) {
 
 #[cfg(test)]
 mod tests {
-    use super::write_varint;
+    use super::{write_varint, read_varint};
 
     #[test]
     fn write_positive() {
@@ -61,5 +61,23 @@ mod tests {
         write_varint(&mut buf, -2147483648);
         assert_eq!(buf, vec![0x80, 0x80, 0x80, 0x80, 0x08]);
     }
+
+    #[test]
+    fn read_positive() {
+        let mut buf = vec![0xff, 0xff, 0xff, 0xff, 0x07];
+
+        assert_eq!(read_varint(&mut buf).unwrap(), 2147483647);
+    }
+
+    #[test]
+    fn read_negative() {
+        let mut buf = vec![0x80, 0x80, 0x80, 0x80, 0x08];
+
+        assert_eq!(read_varint(&mut buf).unwrap(), -2147483648);
+    }
+
+
+
+
 }
 
