@@ -38,7 +38,7 @@ pub fn write_varlong(mut buf: &mut Vec<u8>, mut value: VarLong) {
 
         buf.put_u8((value as u8 & SEGMENT_BITS as u8) | CONTINUE_BIT as u8);
 
-        value >>= 7;
+        value = (value as u64 >> 7 as u64) as i64;
     }
 }
 

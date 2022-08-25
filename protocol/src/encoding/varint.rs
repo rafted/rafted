@@ -38,7 +38,9 @@ pub fn write_varint(mut buf: &mut Vec<u8>, mut value: VarInt) {
 
         buf.put_u8((value as u8 & SEGMENT_BITS as u8) | CONTINUE_BIT as u8);
 
-        value >>= 7;
+        value = (value as u32 >> 7 as u32) as i32;
+
+        dbg!(value);
     }
 }
 
