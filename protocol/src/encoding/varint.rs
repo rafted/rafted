@@ -12,9 +12,9 @@ pub fn read_varint(mut buf: &[u8]) -> Result<VarInt, String> {
     loop {
         current_byte = buf.get_u8();
 
-        value |= ((current_byte & SEGMENT_BITS) as i32) << position;
+        value |= (current_byte as i32 & SEGMENT_BITS) << position;
 
-        if (current_byte & CONTINUE_BIT) == 0 {
+        if (current_byte as i32 & CONTINUE_BIT) == 0 {
             break;
         }
 
@@ -31,14 +31,13 @@ pub fn read_varint(mut buf: &[u8]) -> Result<VarInt, String> {
 
 pub fn write_varint(mut buf: &mut Vec<u8>, mut value: VarInt) {
     loop {
-        if (value & (SEGMENT_BITS as i32)) == 0 {
-            buf.put_i32(value);
+        if (value & !SEGMENT_BITS) == 0 {
+            buf.put_u8(value as u8);
             break;
         }
 
-        buf.put_i32((value & SEGMENT_BITS as i32) | CONTINUE_BIT as i32);
+        buf.put_u8((value as u8 & SEGMENT_BITS as u8) | CONTINUE_BIT as u8);
 
-        // value >>>= 7;
         value >>= 7;
     }
 }
