@@ -1,2 +1,2 @@
-mod encoding;
-mod packet;
+pub mod encoding;
+pub mod packet;
