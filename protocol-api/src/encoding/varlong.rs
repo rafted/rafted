@@ -29,7 +29,7 @@ pub fn read_varlong(mut buf: &[u8]) -> Result<VarLong, String> {
     Ok(value)
 }
 
-pub fn write_varlong(mut buf: &mut Vec<u8>, mut value: VarLong) {
+pub fn write_varlong(buf: &mut Vec<u8>, mut value: VarLong) {
     loop {
         if (value & !(SEGMENT_BITS as i64)) == 0 {
             buf.put_u8(value as u8);

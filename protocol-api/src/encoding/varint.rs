@@ -29,7 +29,7 @@ pub fn read_varint(mut buf: &[u8]) -> Result<VarInt, String> {
     Ok(value)
 }
 
-pub fn write_varint(mut buf: &mut Vec<u8>, mut value: VarInt) {
+pub fn write_varint(buf: &mut Vec<u8>, mut value: VarInt) {
     loop {
         if (value & !SEGMENT_BITS) == 0 {
             buf.put_u8(value as u8);
