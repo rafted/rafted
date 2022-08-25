@@ -12,7 +12,7 @@ pub fn read_varint(mut buf: &[u8]) -> Result<VarInt, String> {
     loop {
         current_byte = buf.get_u8();
 
-        value |= ((current_byte & SEGMENT_BITS) << position) as i32;
+        value |= ((current_byte & SEGMENT_BITS) as i32) << position;
 
         if (current_byte & CONTINUE_BIT) == 0 {
             break;
