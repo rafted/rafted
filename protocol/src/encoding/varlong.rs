@@ -47,15 +47,17 @@ mod tests {
     use super::write_varlong;
 
     #[test]
-    fn write() {
+    fn write_postitive() {
         let mut buf = vec![];
-        write_varlong(&mut buf, 2147483647);
-        assert_eq!(buf, vec![0xff, 0xff, 0xff, 0xff, 0x07]);
+        write_varlong(&mut buf, 9223372036854775807);
+        assert_eq!(buf, vec![0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f]);
+    }
 
-        // why does this hang??
-    //     let mut buf = vec![];
-    //     write_varlong(&mut buf, -2147483648);
-    //     assert_eq!(buf, vec![0x80, 0x80, 0x80, 0x80, 0x08]);
+    #[test]
+    fn write_negative() {
+        let mut buf = vec![];
+        write_varlong(&mut buf, -9223372036854775808);
+        assert_eq!(buf, vec![0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x01]);
     }
 }
 

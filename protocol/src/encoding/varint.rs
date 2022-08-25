@@ -41,3 +41,23 @@ pub fn write_varint(mut buf: &mut Vec<u8>, mut value: VarInt) {
         value >>= 7;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::write_varint;
+
+    #[test]
+    fn write_positive() {
+        let mut buf = vec![];
+        write_varint(&mut buf, 2147483647);
+        assert_eq!(buf, vec![0xff, 0xff, 0xff, 0xff, 0x07]);
+    }
+
+    #[test]
+    fn write_negative() {
+        let mut buf = vec![];
+        write_varint(&mut buf, -2147483648);
+        assert_eq!(buf, vec![0x80, 0x80, 0x80, 0x80, 0x08]);
+    }
+}
+
