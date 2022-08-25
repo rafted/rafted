@@ -52,14 +52,20 @@ mod tests {
     fn write_postitive() {
         let mut buf = vec![];
         write_varlong(&mut buf, 9223372036854775807);
-        assert_eq!(buf, vec![0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f]);
+        assert_eq!(
+            buf,
+            vec![0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f]
+        );
     }
 
     #[test]
     fn write_negative() {
         let mut buf = vec![];
         write_varlong(&mut buf, -9223372036854775808);
-        assert_eq!(buf, vec![0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x01]);
+        assert_eq!(
+            buf,
+            vec![0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x01]
+        );
     }
 
     #[test]
@@ -75,6 +81,4 @@ mod tests {
 
         assert_eq!(read_varlong(&mut buf).unwrap(), -9223372036854775808);
     }
-
 }
-

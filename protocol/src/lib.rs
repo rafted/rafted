@@ -1,9 +1,9 @@
-use std::{io::{Read, Write}};
+use std::io::{Read, Write};
 
 use packet::Packet;
 
-mod packet;
 mod encoding;
+mod packet;
 
 pub struct HandshakePacket;
 
@@ -23,4 +23,4 @@ impl Write for HandshakePacket {
     }
 }
 
-impl Packet for HandshakePacket { }
+impl Packet for HandshakePacket {}

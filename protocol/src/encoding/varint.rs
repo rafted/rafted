@@ -46,7 +46,7 @@ pub fn write_varint(mut buf: &mut Vec<u8>, mut value: VarInt) {
 
 #[cfg(test)]
 mod tests {
-    use super::{write_varint, read_varint};
+    use super::{read_varint, write_varint};
 
     #[test]
     fn write_positive() {
@@ -75,9 +75,4 @@ mod tests {
 
         assert_eq!(read_varint(&mut buf).unwrap(), -2147483648);
     }
-
-
-
-
 }
-
