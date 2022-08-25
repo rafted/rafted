@@ -1,0 +1,11 @@
+[package]
+name = "protocol-macros"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+minecraft-data-rs = "0.5.0"
+protocol-api = { path = "../protocol-api" }
+
+[lib]
+proc-macro = true
