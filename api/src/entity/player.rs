@@ -19,8 +19,8 @@ impl EntityType for PlayerType {
 }
 
 struct Player {
-    entityId: i32,
-    uniqueId: Uuid,
+    entity_id: i32,
+    unique_id: Uuid,
     body: Option<EntityBody>,
 }
 
@@ -36,7 +36,7 @@ impl Player {
 
 impl Entity<PlayerType> for Player {
     fn get_world_id(&self) -> i32 {
-        return self.entityId;
+        return self.entity_id;
     }
 
     fn get_body(&self) -> Option<EntityBody> {
