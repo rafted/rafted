@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use minecraft_data_rs::{Api, models::protocol::PacketGrouping};
+use minecraft_data_rs::{Api, models::protocol::{PacketGrouping, PacketDataType}};
 use proc_macro::TokenStream;
 
 #[proc_macro]
@@ -45,7 +45,10 @@ pub fn impl_parse(_: TokenStream) -> TokenStream {
 
             let id = i32::from_str_radix(&id_str.trim_start_matches("0x"), 16).unwrap();
 
-            dbg!(name, id_str, id);
+            // read the fields
+            if let PacketDataType::Built{ value, .. } = &packet.data {
+                dbg!(value);
+            }
 
         }
 
