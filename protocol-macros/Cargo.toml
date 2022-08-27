@@ -6,6 +6,8 @@ edition = "2021"
 [dependencies]
 minecraft-data-rs = "0.5.0"
 protocol-api = { path = "../protocol-api" }
+quote = "1.0.21"
+voca_rs = "1.14.0"
 
 [lib]
 proc-macro = true

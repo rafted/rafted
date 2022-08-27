@@ -1,5 +1,5 @@
-use uuid::Uuid;
 use super::entity::{Entity, EntityBody, EntityType, Position};
+use uuid::Uuid;
 
 struct PlayerType;
 

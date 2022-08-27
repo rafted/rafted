@@ -1,7 +1,53 @@
-use std::collections::HashMap;
 
 use minecraft_data_rs::{Api, models::protocol::{PacketGrouping, PacketDataType}};
 use proc_macro::TokenStream;
+use quote::quote;
+
+#[proc_macro]
+pub fn impl_structs(_: TokenStream) -> TokenStream {
+    let mut all_structs: Vec<TokenStream> = vec![];
+
+    // Get an instance of the API to access the data of the latest minecraft version
+    // TODO: Make the version configurable (via macro args)
+    let api = Api::latest().expect("failed to retrieve latest version");
+    let protocol = api.protocols.get_protocol().expect("failed to get protocol section");
+
+    // Get a list of all packet groupings. These represent the 4 states that we have, thus the name
+    // of the variable.
+    let states: Vec<(String, &PacketGrouping)> = vec![
+        ("handshake".to_string(), &protocol.handshaking),
+        ("login".to_string(), &protocol.login),
+        ("status".to_string(), &protocol.status),
+        ("play".to_string(), &protocol.play),
+    ];
+
+    // Go through each state, so we can create a module of structs for each one of them 
+    for (state_name, state) in states {
+        let mut state_structs: Vec<TokenStream> = vec![];
+
+        let packets = &state.to_server;
+
+        for packet in &packets.types {
+            let name = &packet.name.trim_start_matches("packet_");
+            let fmt_name = voca_rs::case::pascal_case(name);
+
+            state_structs.push(TokenStream::from(quote! {
+                pub struct #fmt_name { }
+            }))
+        }
+
+        all_structs.push(TokenStream::from(quote! {
+            mod #state_name {
+                #(state_structs)
+            }
+        }));
+    }
+
+    TokenStream::from(quote! {
+        #(all_structs)
+    })
+}
+
 
 #[proc_macro]
 pub fn impl_parse(_: TokenStream) -> TokenStream {
