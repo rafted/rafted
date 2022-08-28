@@ -1,8 +1,14 @@
-pub trait Entity: Send + Copy + Clone {
+pub trait Entity: Send {
     fn get_entity_id(&self) -> i32;
 }
 
-pub trait Body: Send + Copy + Clone {
+impl PartialEq for dyn Entity + '_ {
+    fn eq(&self, other: &Self) -> bool {
+        return self.get_entity_id() == other.get_entity_id();
+    }
+}
+
+pub trait Body: Send {
     fn get_position(&self) -> Position;
     fn teleport(&mut self, to: Position);
 }

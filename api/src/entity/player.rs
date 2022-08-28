@@ -1,7 +1,7 @@
 use super::entity::{Body, Entity, Position};
 use uuid::Uuid;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Debug, Clone)]
 pub struct Player<'a> {
     entity_id: i32,
     unique_id: Uuid,
