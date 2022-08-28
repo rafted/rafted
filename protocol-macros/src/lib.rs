@@ -1,5 +1,8 @@
+use minecraft_data_rs::{
+    models::protocol::PacketGrouping,
+    Api,
+};
 use proc_macro::TokenStream;
-use minecraft_data_rs::{Api, models::protocol::PacketGrouping};
 use quote::quote;
 
 #[proc_macro]
@@ -9,7 +12,10 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
     // Get an instance of the API to access the data of the latest minecraft version
     // TODO: Make the version configurable (via macro args)
     let api = Api::latest().expect("failed to retrieve latest version");
-    let protocol = api.protocols.get_protocol().expect("failed to get protocol section");
+    let protocol = api
+        .protocols
+        .get_protocol()
+        .expect("failed to get protocol section");
 
     // Get a list of all packet groupings. These represent the 4 states that we have, thus the name
     // of the variable.
@@ -20,7 +26,7 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
         ("play".to_string(), &protocol.play),
     ];
 
-    // Go through each state, so we can create a module of structs for each one of them 
+    // Go through each state, so we can create a module of structs for each one of them
     for (state_name, state) in states {
         let mut state_structs: Vec<TokenStream> = vec![];
 
@@ -50,7 +56,6 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
         #(all_structs)
     }.into()
 }
-
 
 // #[proc_macro]
 // pub fn impl_parse(_: TokenStream) -> TokenStream {

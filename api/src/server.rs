@@ -1,9 +1,10 @@
-type Player = i64;
-type World = i64;
+use crate::entity::{self, player::Player};
+
+type World = i32;
 
 #[derive(Debug, Clone)]
 pub struct Server {
-    players: Vec<Player>,
+    players: Vec<Player<'static>>,
     worlds: Vec<World>,
 }
 

@@ -1,29 +1,24 @@
-pub trait EntityType {
-    fn get_id(&self) -> i32;
-    fn get_width(&self) -> f32;
-    fn get_height(&self) -> f32;
+pub trait Entity: Send {
+    fn get_entity_id(&self) -> i32;
 }
 
-pub trait Entity<T>
-where
-    T: EntityType,
-{
-    fn get_world_id(&self) -> i32;
-    fn get_body(&self) -> Option<EntityBody>;
-    fn create_body(&mut self);
-    fn get_entity_type() -> T;
+impl PartialEq for dyn Entity + '_ {
+    fn eq(&self, other: &Self) -> bool {
+        return self.get_entity_id() == other.get_entity_id();
+    }
 }
 
-#[derive(Clone, Copy, Debug)]
-pub struct EntityBody {
-    pub position: Position,
+pub trait Body: Send {
+    fn get_position(&self) -> Position;
+    fn teleport(&mut self, to: Position);
 }
 
 #[derive(Clone, Copy, Debug)]
-pub struct Position {
+pub struct Position<'a> {
     pub x: f32,
     pub y: f32,
     pub z: f32,
     pub yaw: f32,
     pub pitch: f32,
+    pub world: &'a str,
 }
