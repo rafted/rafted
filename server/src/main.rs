@@ -1,4 +1,4 @@
-use protocol_macros::{impl_parse, impl_structs};
+use protocol_macros::impl_structs;
 
 impl_structs!();
 
