@@ -1,5 +1,7 @@
-
-use minecraft_data_rs::{Api, models::protocol::{PacketGrouping, PacketDataType}};
+use minecraft_data_rs::{
+    models::protocol::{PacketDataType, PacketGrouping},
+    Api,
+};
 use proc_macro::TokenStream;
 use quote::quote;
 
@@ -10,7 +12,10 @@ pub fn impl_structs(_: TokenStream) -> TokenStream {
     // Get an instance of the API to access the data of the latest minecraft version
     // TODO: Make the version configurable (via macro args)
     let api = Api::latest().expect("failed to retrieve latest version");
-    let protocol = api.protocols.get_protocol().expect("failed to get protocol section");
+    let protocol = api
+        .protocols
+        .get_protocol()
+        .expect("failed to get protocol section");
 
     // Get a list of all packet groupings. These represent the 4 states that we have, thus the name
     // of the variable.
@@ -21,7 +26,7 @@ pub fn impl_structs(_: TokenStream) -> TokenStream {
         ("play".to_string(), &protocol.play),
     ];
 
-    // Go through each state, so we can create a module of structs for each one of them 
+    // Go through each state, so we can create a module of structs for each one of them
     for (state_name, state) in states {
         let mut state_structs: Vec<TokenStream> = vec![];
 
@@ -48,7 +53,6 @@ pub fn impl_structs(_: TokenStream) -> TokenStream {
     })
 }
 
-
 #[proc_macro]
 pub fn impl_parse(_: TokenStream) -> TokenStream {
     let stream = TokenStream::new();
@@ -56,7 +60,10 @@ pub fn impl_parse(_: TokenStream) -> TokenStream {
     // Get an instance of the API to access the data of the latest minecraft version
     // TODO: Make the version configurable (via macro args)
     let api = Api::latest().expect("failed to retrieve latest version");
-    let protocol = api.protocols.get_protocol().expect("failed to get protocol section");
+    let protocol = api
+        .protocols
+        .get_protocol()
+        .expect("failed to get protocol section");
 
     // Get a list of all packet groupings. These represent the 4 states that we have, thus the name
     // of the variable.
@@ -67,9 +74,8 @@ pub fn impl_parse(_: TokenStream) -> TokenStream {
         &protocol.play,
     ];
 
-    // Go through each state, so we can create a case for each one of them 
+    // Go through each state, so we can create a case for each one of them
     for state in states {
-
         // We get the packets. Note that we only get the packets which are sent to the sever. This
         // is because we're generating a parse function. On the write function, this should go
         // through the to_client packets.
@@ -92,12 +98,10 @@ pub fn impl_parse(_: TokenStream) -> TokenStream {
             let id = i32::from_str_radix(&id_str.trim_start_matches("0x"), 16).unwrap();
 
             // read the fields
-            if let PacketDataType::Built{ value, .. } = &packet.data {
+            if let PacketDataType::Built { value, .. } = &packet.data {
                 dbg!(value);
             }
-
         }
-
     }
 
     stream

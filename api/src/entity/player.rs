@@ -1,61 +1,53 @@
-use super::entity::{Entity, EntityBody, EntityType, Position};
+use super::entity::{Body, Entity, Position};
 use uuid::Uuid;
 
-struct PlayerType;
-
-// maybe use macros for entity types
-impl EntityType for PlayerType {
-    fn get_height(&self) -> f32 {
-        return 1.8;
-    }
-
-    fn get_width(&self) -> f32 {
-        return 0.6;
-    }
-
-    fn get_id(&self) -> i32 {
-        return 116;
-    }
-}
-
-struct Player {
+#[derive(Clone, Copy, Debug)]
+pub struct Player<'a> {
     entity_id: i32,
     unique_id: Uuid,
-    body: Option<EntityBody>,
+    position: Position<'a>,
 }
 
-impl Player {
-    fn is_online(&self) -> bool {
-        return self.body.is_some();
-    }
+impl<'a> Player<'a> {
+    pub fn new(unique_id: Uuid) -> Self {
+        // Implement data for location etc"
 
-    fn send_message(&self) {
-        todo!("implement")
-    }
-}
-
-impl Entity<PlayerType> for Player {
-    fn get_world_id(&self) -> i32 {
-        return self.entity_id;
-    }
-
-    fn get_body(&self) -> Option<EntityBody> {
-        return self.body;
-    }
-
-    fn create_body(&mut self) {
-        self.body = Some(EntityBody {
+        return Self {
+            entity_id: 0,
             position: Position {
                 x: 0.0,
                 y: 0.0,
                 z: 0.0,
-                pitch: 0.0,
                 yaw: 0.0,
+                pitch: 0.0,
+                world: "normal",
             },
-        });
+            unique_id,
+        };
     }
 
-    fn get_entity_type() -> PlayerType {
-        return PlayerType;
+    pub fn send_message(&self, message: &str) {
+        println!("sending message: {}", message);
+        todo!("implement")
+    }
+
+    pub fn get_unique_id(&self) -> Uuid {
+        return self.unique_id;
+    }
+}
+
+impl<'a> Entity for Player<'a> {
+    fn get_entity_id(&self) -> i32 {
+        return self.entity_id;
+    }
+}
+
+impl<'a> Body for Player<'a> {
+    fn teleport(&mut self, to: Position) {
+        println!("{:?}", to)
+    }
+
+    fn get_position(&self) -> Position {
+        return self.position;
     }
 }
