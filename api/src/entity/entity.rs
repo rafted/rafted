@@ -13,7 +13,7 @@ pub trait Body: Send {
     fn teleport(&mut self, to: Position);
 }
 
-pub trait Messageable: Send {
+pub trait Recipient: Send {
     fn send_message(&self, msg: String);
 }
 

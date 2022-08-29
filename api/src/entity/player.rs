@@ -1,4 +1,4 @@
-use super::entity::{Body, Entity, Position, Messageable};
+use super::entity::{Body, Entity, Position, Recipient};
 use uuid::Uuid;
 
 #[derive(Debug, Clone)]
@@ -31,7 +31,7 @@ impl Player {
     }
 }
 
-impl Messageable for Player {
+impl Recipient for Player {
     fn send_message(&self, msg: String) {
         println!("sending message: {}", msg);
     }
