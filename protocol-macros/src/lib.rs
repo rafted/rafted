@@ -1,4 +1,7 @@
-use minecraft_data_rs::{models::protocol::PacketGrouping, Api};
+use minecraft_data_rs::{
+    models::protocol::{PacketGrouping, PacketTypes},
+    Api,
+};
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 use quote::quote;
@@ -26,38 +29,46 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
         ("play".to_string(), &protocol.play),
     ];
 
-    // Go through each state, so we can create a module of structs for each one of them
+    // Go through each state, so we can create a module of structs for each one of them.
     for (state_name, state) in states {
         let state_name_ident = syn::Ident::new(&state_name, Span::call_site());
-
         let mut state_structs: Vec<WeirdTokenStream> = vec![];
 
-        let packets = &state.to_server;
+        let directions: Vec<(String, &PacketTypes)> = vec![
+            ("clientbound".to_string(), &state.to_client),
+            ("serverbound".to_string(), &state.to_server),
+        ];
 
-        // Go through each packet and create a struct for it
-        for packet in &packets.types {
-            // Format the name to PascalCase so it is appropriate for a struct name
-            let name = &packet.name.trim_start_matches("packet_");
-            let fmt_name = voca_rs::case::pascal_case(name);
-            let name_ident = syn::Ident::new(&fmt_name, Span::call_site());
+        // Go through each direction in the state, so we can create a module for each one of them.
+        for (direction_name, packets) in directions {
+            let direction_name_ident = syn::Ident::new(&direction_name, Span::call_site());
+            let mut direction_structs: Vec<WeirdTokenStream> = vec![];
 
+            // Go through each packet and create a struct for it
+            for packet in &packets.types {
+                // Format the name to PascalCase so it is appropriate for a struct name
+                let name = &packet.name.trim_start_matches("packet_");
+                let fmt_name = voca_rs::case::pascal_case(name);
+                let name_ident = syn::Ident::new(&fmt_name, Span::call_site());
 
-            state_structs.push(
-                quote! {
+                direction_structs.push(quote! {
                     pub struct #name_ident { }
+                })
+            }
+
+            state_structs.push(quote! {
+                pub mod #direction_name_ident {
+                    #(#direction_structs)*
                 }
-            )
+            });
         }
 
         // Create a module for the state, to wrap all the packet structs that we just created
-        all_structs.push(
-            quote! {
-                mod #state_name_ident {
-                    #(#state_structs)*
-                }
+        all_structs.push(quote! {
+            pub mod #state_name_ident {
+                #(#state_structs)*
             }
-            .into(),
-        );
+        });
     }
 
     quote! {
