@@ -1,11 +1,13 @@
 use minecraft_data_rs::{models::protocol::PacketGrouping, Api};
 use proc_macro::TokenStream;
 use proc_macro2::Span;
-use quote::{quote, format_ident};
+use quote::quote;
+
+type WeirdTokenStream = proc_macro2::TokenStream;
 
 #[proc_macro]
 pub fn impl_structs(_input: TokenStream) -> TokenStream {
-    let mut all_structs: Vec<quote::__private::TokenStream> = vec![];
+    let mut all_structs: Vec<WeirdTokenStream> = vec![];
 
     // Get an instance of the API to access the data of the latest minecraft version
     // TODO: Make the version configurable (via macro args)
@@ -28,7 +30,7 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
     for (state_name, state) in states {
         let state_name_ident = syn::Ident::new(&state_name, Span::call_site());
 
-        let mut state_structs: Vec<quote::__private::TokenStream> = vec![];
+        let mut state_structs: Vec<WeirdTokenStream> = vec![];
 
         let packets = &state.to_server;
 
