@@ -1,14 +1,14 @@
-use super::entity::{Body, Entity, Position};
+use super::entity::{Body, Entity, Position, Messageable};
 use uuid::Uuid;
 
 #[derive(Debug, Clone)]
-pub struct Player<'a> {
+pub struct Player {
     entity_id: i32,
     unique_id: Uuid,
-    position: Position<'a>,
+    position: Position,
 }
 
-impl<'a> Player<'a> {
+impl Player {
     pub fn new(unique_id: Uuid) -> Self {
         // Implement data for location etc"
 
@@ -20,15 +20,10 @@ impl<'a> Player<'a> {
                 z: 0.0,
                 yaw: 0.0,
                 pitch: 0.0,
-                world: "normal",
+                world: "normal".into(),
             },
             unique_id,
         };
-    }
-
-    pub fn send_message(&self, message: &str) {
-        println!("sending message: {}", message);
-        todo!("implement")
     }
 
     pub fn get_unique_id(&self) -> Uuid {
@@ -36,18 +31,24 @@ impl<'a> Player<'a> {
     }
 }
 
-impl<'a> Entity for Player<'a> {
+impl Messageable for Player {
+    fn send_message(&self, msg: String) {
+        println!("sending message: {}", msg);
+    }
+}
+
+impl Entity for Player {
     fn get_entity_id(&self) -> i32 {
         return self.entity_id;
     }
 }
 
-impl<'a> Body for Player<'a> {
+impl Body for Player {
     fn teleport(&mut self, to: Position) {
         println!("{:?}", to)
     }
 
-    fn get_position(&self) -> Position {
-        return self.position;
+    fn get_position(&self) -> &Position {
+        return &self.position;
     }
 }

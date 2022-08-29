@@ -4,7 +4,7 @@ type World = i32;
 
 #[derive(Debug, Clone)]
 pub struct Server {
-    players: Vec<Player<'static>>,
+    players: Vec<Player>,
     worlds: Vec<World>,
 }
 
