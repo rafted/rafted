@@ -1,5 +1,5 @@
 use minecraft_data_rs::{
-    models::protocol::{PacketGrouping, PacketTypes},
+    models::protocol::{types::TypeName, NativeType, PacketDataType, PacketGrouping, PacketTypes},
     Api,
 };
 use proc_macro::TokenStream;
@@ -7,6 +7,17 @@ use proc_macro2::Span;
 use quote::quote;
 
 type WeirdTokenStream = proc_macro2::TokenStream;
+
+// helper macros
+macro_rules! unpack_built {
+    ($x:ident) => {
+        if let PacketDataType::Built { name: _, value } = $x {
+            value
+        } else {
+            panic!("not built")
+        }
+    };
+}
 
 #[proc_macro]
 pub fn impl_structs(_input: TokenStream) -> TokenStream {
@@ -51,8 +62,96 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
                 let fmt_name = voca_rs::case::pascal_case(name);
                 let name_ident = syn::Ident::new(&fmt_name, Span::call_site());
 
+                // Create the list of fields for the struct
+                // God this is messy...
+                let mut fields: Vec<WeirdTokenStream> = vec![];
+
+                let data = &packet.data;
+                let data = unpack_built!(data);
+
+                if let NativeType::Container(v) = &data {
+                    for field in v {
+                        // get the name of the field
+                        let name = if let TypeName::Named(name) = &field.0 {
+                            Some(name)
+                        } else {
+                            None
+                        }
+                        .unwrap();
+
+                        let mut fmt_name = voca_rs::case::snake_case(name);
+
+                        // blacklist reserved types
+                        if fmt_name == "type" {
+                            fmt_name = "type_".to_string();
+                        }
+
+                        let name_ident = syn::Ident::new(&fmt_name, Span::call_site());
+
+                        // get the type of the field
+                        let type_ = match &*field.1 {
+                            PacketDataType::Native(v) => match v {
+                                NativeType::VarInt => "i32",
+                                NativeType::PString { count_type: _ } => "String",
+                                NativeType::Buffer { count_type: _ } => todo!("Buffer"),
+                                NativeType::Bool => "bool",
+                                NativeType::U8 => "u8",
+                                NativeType::U16 => "u16",
+                                NativeType::U32 => "u32",
+                                NativeType::U64 => "u64",
+                                NativeType::I8 => "i8",
+                                NativeType::I16 => "i16",
+                                NativeType::I32 => "i32",
+                                NativeType::I64 => "i64",
+                                NativeType::F32 => "f32",
+                                NativeType::F64 => "f64",
+                                NativeType::Uuid => todo!("UUID"),
+                                NativeType::Option(_) => todo!("Option"),
+                                NativeType::EntityMetadataLoop {
+                                    end_val: _,
+                                    metadata_type: _,
+                                } => todo!("EntityMetadataLoop"),
+                                NativeType::TopBitSetTerminatedArray(_) => todo!("BitSet"),
+                                NativeType::BitField(_) => todo!("BitField"),
+                                NativeType::Container(_) => todo!("Container"),
+                                NativeType::Switch {
+                                    compare_to: _,
+                                    fields: _,
+                                    default: _,
+                                } => todo!("Switch"),
+                                NativeType::Void => todo!("Void"),
+                                NativeType::Array {
+                                    count_type: _,
+                                    array_type: _,
+                                } => todo!("Array"),
+                                NativeType::RestBuffer => todo!("RestBuffer"),
+                                NativeType::NBT => todo!("NBT"),
+                                NativeType::OptionalNBT => todo!("OptionalNBT"),
+                                _ => todo!(),
+                            },
+                            PacketDataType::UnknownNativeType(_) => {
+                                todo!("UnknownNativeType")
+                            }
+                            PacketDataType::Built { name: _, value: _ } => {
+                                todo!("Built")
+                            }
+                            PacketDataType::Other { name: _, value: _ } => {
+                                todo!("Other")
+                            }
+                        };
+
+                        let type_ident = syn::Ident::new(type_, Span::call_site());
+
+                        fields.push(quote! {
+                            pub #name_ident: #type_ident
+                        });
+                    }
+                }
+
                 direction_structs.push(quote! {
-                    pub struct #name_ident { }
+                    pub struct #name_ident {
+                        #(#fields),*
+                    }
                 })
             }
 
