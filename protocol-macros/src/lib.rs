@@ -1,10 +1,11 @@
 use minecraft_data_rs::{models::protocol::PacketGrouping, Api};
 use proc_macro::TokenStream;
-use quote::quote;
+use proc_macro2::Span;
+use quote::{quote, format_ident};
 
 #[proc_macro]
 pub fn impl_structs(_input: TokenStream) -> TokenStream {
-    let mut all_structs: Vec<TokenStream> = vec![];
+    let mut all_structs: Vec<quote::__private::TokenStream> = vec![];
 
     // Get an instance of the API to access the data of the latest minecraft version
     // TODO: Make the version configurable (via macro args)
@@ -25,7 +26,9 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
 
     // Go through each state, so we can create a module of structs for each one of them
     for (state_name, state) in states {
-        let mut state_structs: Vec<TokenStream> = vec![];
+        let state_name_ident = syn::Ident::new(&state_name, Span::call_site());
+
+        let mut state_structs: Vec<quote::__private::TokenStream> = vec![];
 
         let packets = &state.to_server;
 
@@ -34,20 +37,21 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
             // Format the name to PascalCase so it is appropriate for a struct name
             let name = &packet.name.trim_start_matches("packet_");
             let fmt_name = voca_rs::case::pascal_case(name);
+            let name_ident = syn::Ident::new(&fmt_name, Span::call_site());
+
 
             state_structs.push(
                 quote! {
-                    pub struct #fmt_name { }
+                    pub struct #name_ident { }
                 }
-                .into(),
             )
         }
 
         // Create a module for the state, to wrap all the packet structs that we just created
         all_structs.push(
             quote! {
-                mod #state_name {
-                    #(state_structs)
+                mod #state_name_ident {
+                    #(#state_structs)*
                 }
             }
             .into(),
@@ -55,7 +59,7 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
     }
 
     quote! {
-        #(all_structs)
+        #(#all_structs)*
     }
     .into()
 }

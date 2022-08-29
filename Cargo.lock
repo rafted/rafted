@@ -141,8 +141,10 @@ name = "protocol-macros"
 version = "0.1.0"
 dependencies = [
  "minecraft-data-rs",
+ "proc-macro2",
  "protocol-api",
  "quote",
+ "syn",
  "voca_rs",
 ]
 
