@@ -66,23 +66,17 @@ fn convert_type(t: &PacketDataType) -> Ident {
         PacketDataType::Built { name: _, value: _ } => {
             todo!("Built")
         }
-        PacketDataType::Other { name, value: _ } => {
-            match name {
-                Some(v) => {
-                    match v {
-                        TypeName::Anonymous => panic!("unknown type (anonymous)"),
-                        TypeName::Named(name) => {
-                            match name.to_string().as_ref() {
-                                "string" => "string",
-                                "restBuffer" => "protocol_api::encoding::RestBuffer",
-                                v => panic!("unknown type {}", v)
-                            }
-                        },
-                    }
+        PacketDataType::Other { name, value: _ } => match name {
+            Some(v) => match v {
+                TypeName::Anonymous => panic!("unknown type (anonymous)"),
+                TypeName::Named(name) => match name.to_string().as_ref() {
+                    "string" => "string",
+                    "restBuffer" => "protocol_api::encoding::RestBuffer",
+                    v => panic!("unknown type {}", v),
                 },
-                None => panic!("unknown type (none)"),
-            }
-        }
+            },
+            None => panic!("unknown type (none)"),
+        },
     };
 
     syn::Ident::new(type_, Span::call_site())
