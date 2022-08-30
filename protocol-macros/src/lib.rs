@@ -22,22 +22,26 @@ macro_rules! unpack_built {
 fn convert_type(t: &PacketDataType) -> String {
     let type_ = match t {
         PacketDataType::Native(v) => match v {
-            NativeType::VarInt => "i32",
-            NativeType::PString { count_type: _ } => "String",
+            NativeType::VarInt => "i32".to_string(),
+            NativeType::PString { count_type: _ } => "String".to_string(),
             NativeType::Buffer { count_type: _ } => todo!("Buffer"),
-            NativeType::Bool => "bool",
-            NativeType::U8 => "u8",
-            NativeType::U16 => "u16",
-            NativeType::U32 => "u32",
-            NativeType::U64 => "u64",
-            NativeType::I8 => "i8",
-            NativeType::I16 => "i16",
-            NativeType::I32 => "i32",
-            NativeType::I64 => "i64",
-            NativeType::F32 => "f32",
-            NativeType::F64 => "f64",
-            NativeType::Uuid => "uuid::Uuid",
-            NativeType::Option(_) => todo!("Option"),
+            NativeType::Bool => "bool".to_string(),
+            NativeType::U8 => "u8".to_string(),
+            NativeType::U16 => "u16".to_string(),
+            NativeType::U32 => "u32".to_string(),
+            NativeType::U64 => "u64".to_string(),
+            NativeType::I8 => "i8".to_string(),
+            NativeType::I16 => "i16".to_string(),
+            NativeType::I32 => "i32".to_string(),
+            NativeType::I64 => "i64".to_string(),
+            NativeType::F32 => "f32".to_string(),
+            NativeType::F64 => "f64".to_string(),
+            NativeType::Uuid => "uuid::Uuid".to_string(),
+            NativeType::Option(v) => {
+                let t = convert_type(&v);
+
+                format!("Option<{}>", t)
+            }
             NativeType::EntityMetadataLoop {
                 end_val: _,
                 metadata_type: _,
@@ -55,7 +59,7 @@ fn convert_type(t: &PacketDataType) -> String {
                 count_type: _,
                 array_type: _,
             } => todo!("Array"),
-            NativeType::RestBuffer => "protocol_api::encoding::RestBuffer",
+            NativeType::RestBuffer => "protocol_api::encoding::RestBuffer".to_string(),
             NativeType::NBT => todo!("NBT"),
             NativeType::OptionalNBT => todo!("OptionalNBT"),
             _ => todo!(),
@@ -70,9 +74,9 @@ fn convert_type(t: &PacketDataType) -> String {
             Some(v) => match v {
                 TypeName::Anonymous => panic!("unknown type (anonymous)"),
                 TypeName::Named(name) => match name.to_string().as_ref() {
-                    "string" => "string",
-                    "restBuffer" => "protocol_api::encoding::RestBuffer",
-                    "UUID" => "uuid::Uuid",
+                    "string" => "string".to_string(),
+                    "restBuffer" => "protocol_api::encoding::RestBuffer".to_string(),
+                    "UUID" => "uuid::Uuid".to_string(),
                     v => panic!("unknown type {}", v),
                 },
             },
@@ -80,7 +84,7 @@ fn convert_type(t: &PacketDataType) -> String {
         },
     };
 
-    type_.to_string()
+    type_
 }
 
 #[proc_macro]
