@@ -56,9 +56,12 @@ fn convert_type(t: &PacketDataType) -> String {
             } => todo!("Switch"),
             NativeType::Void => todo!("Void"),
             NativeType::Array {
-                count_type: _,
-                array_type: _,
-            } => todo!("Array"),
+                count_type,
+                array_type,
+            } => {
+                dbg!(array_type, t);
+                "".to_string()
+            },
             NativeType::RestBuffer => "protocol_api::encoding::RestBuffer".to_string(),
             NativeType::NBT => todo!("NBT"),
             NativeType::OptionalNBT => todo!("OptionalNBT"),
@@ -77,6 +80,7 @@ fn convert_type(t: &PacketDataType) -> String {
                     "string" => "string".to_string(),
                     "restBuffer" => "protocol_api::encoding::RestBuffer".to_string(),
                     "UUID" => "uuid::Uuid".to_string(),
+                    "position" => "protocol_api::encoding::position::Position".to_string(),
                     v => panic!("unknown type {}", v),
                 },
             },
