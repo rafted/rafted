@@ -55,7 +55,7 @@ fn convert_type(t: &PacketDataType) -> Ident {
                 count_type: _,
                 array_type: _,
             } => todo!("Array"),
-            NativeType::RestBuffer => todo!("RestBuffer"),
+            NativeType::RestBuffer => "protocol_api::encoding::RestBuffer",
             NativeType::NBT => todo!("NBT"),
             NativeType::OptionalNBT => todo!("OptionalNBT"),
             _ => todo!(),
@@ -66,8 +66,22 @@ fn convert_type(t: &PacketDataType) -> Ident {
         PacketDataType::Built { name: _, value: _ } => {
             todo!("Built")
         }
-        PacketDataType::Other { name: _, value: _ } => {
-            todo!("Other")
+        PacketDataType::Other { name, value: _ } => {
+            match name {
+                Some(v) => {
+                    match v {
+                        TypeName::Anonymous => panic!("unknown type (anonymous)"),
+                        TypeName::Named(name) => {
+                            match name.to_string().as_ref() {
+                                "string" => "string",
+                                "restBuffer" => "protocol_api::encoding::RestBuffer",
+                                v => panic!("unknown type {}", v)
+                            }
+                        },
+                    }
+                },
+                None => panic!("unknown type (none)"),
+            }
         }
     };
 
