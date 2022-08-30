@@ -8,7 +8,7 @@ minecraft-data-rs = "0.5.0"
 proc-macro2 = "1.0.43"
 protocol-api = { path = "../protocol-api" }
 quote = "1.0.21"
-syn = "1.0.99"
+syn = { version = "1.0.99", features = ["full"] }
 voca_rs = "1.14.0"
 
 [lib]

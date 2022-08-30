@@ -4,7 +4,7 @@ use minecraft_data_rs::{
 };
 use proc_macro::TokenStream;
 use proc_macro2::{Ident, Span};
-use quote::quote;
+use quote::{format_ident, quote};
 
 type WeirdTokenStream = proc_macro2::TokenStream;
 
@@ -19,7 +19,7 @@ macro_rules! unpack_built {
     };
 }
 
-fn convert_type(t: &PacketDataType) -> Ident {
+fn convert_type(t: &PacketDataType) -> String {
     let type_ = match t {
         PacketDataType::Native(v) => match v {
             NativeType::VarInt => "i32",
@@ -72,6 +72,7 @@ fn convert_type(t: &PacketDataType) -> Ident {
                 TypeName::Named(name) => match name.to_string().as_ref() {
                     "string" => "string",
                     "restBuffer" => "protocol_api::encoding::RestBuffer",
+                    "UUID" => "uuid::Uuid",
                     v => panic!("unknown type {}", v),
                 },
             },
@@ -79,7 +80,7 @@ fn convert_type(t: &PacketDataType) -> Ident {
         },
     };
 
-    syn::Ident::new(type_, Span::call_site())
+    type_.to_string()
 }
 
 #[proc_macro]
@@ -152,10 +153,10 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
                         let name_ident = syn::Ident::new(&fmt_name, Span::call_site());
 
                         // get the type of the field
-                        let type_ident = convert_type(&*field.1);
+                        let actual_type = convert_type(&*field.1);
 
                         fields.push(quote! {
-                            pub #name_ident: #type_ident
+                            pub #name_ident: #actual_type
                         });
                     }
                 }
