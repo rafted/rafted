@@ -244,6 +244,7 @@ version = "0.1.0"
 dependencies = [
  "protocol-api",
  "protocol-macros",
+ "uuid",
 ]
 
 [[package]]
