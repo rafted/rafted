@@ -36,7 +36,7 @@ fn convert_type(t: &PacketDataType) -> Ident {
             NativeType::I64 => "i64",
             NativeType::F32 => "f32",
             NativeType::F64 => "f64",
-            NativeType::Uuid => todo!("UUID"),
+            NativeType::Uuid => "uuid::Uuid",
             NativeType::Option(_) => todo!("Option"),
             NativeType::EntityMetadataLoop {
                 end_val: _,
