@@ -19,28 +19,28 @@ macro_rules! unpack_built {
     };
 }
 
-fn convert_type(t: &PacketDataType) -> String {
+fn convert_type(t: &PacketDataType) -> Option<String> {
     let type_ = match t {
         PacketDataType::Native(v) => match v {
-            NativeType::VarInt => "i32".to_string(),
-            NativeType::PString { count_type: _ } => "String".to_string(),
+            NativeType::VarInt => Some("i32".to_string()),
+            NativeType::PString { count_type: _ } => Some("String".to_string()),
             NativeType::Buffer { count_type: _ } => todo!("Buffer"),
-            NativeType::Bool => "bool".to_string(),
-            NativeType::U8 => "u8".to_string(),
-            NativeType::U16 => "u16".to_string(),
-            NativeType::U32 => "u32".to_string(),
-            NativeType::U64 => "u64".to_string(),
-            NativeType::I8 => "i8".to_string(),
-            NativeType::I16 => "i16".to_string(),
-            NativeType::I32 => "i32".to_string(),
-            NativeType::I64 => "i64".to_string(),
-            NativeType::F32 => "f32".to_string(),
-            NativeType::F64 => "f64".to_string(),
-            NativeType::Uuid => "uuid::Uuid".to_string(),
+            NativeType::Bool => Some("bool".to_string()),
+            NativeType::U8 => Some("u8".to_string()),
+            NativeType::U16 => Some("u16".to_string()),
+            NativeType::U32 => Some("u32".to_string()),
+            NativeType::U64 => Some("u64".to_string()),
+            NativeType::I8 => Some("i8".to_string()),
+            NativeType::I16 => Some("i16".to_string()),
+            NativeType::I32 => Some("i32".to_string()),
+            NativeType::I64 => Some("i64".to_string()),
+            NativeType::F32 => Some("f32".to_string()),
+            NativeType::F64 => Some("f64".to_string()),
+            NativeType::Uuid => Some("uuid::Uuid".to_string()),
             NativeType::Option(v) => {
                 let t = convert_type(&v);
 
-                format!("Option<{}>", t)
+                Some(format!("Option<{}>", t.unwrap()))
             }
             NativeType::EntityMetadataLoop {
                 end_val: _,
@@ -56,13 +56,15 @@ fn convert_type(t: &PacketDataType) -> String {
             } => todo!("Switch"),
             NativeType::Void => todo!("Void"),
             NativeType::Array {
-                count_type,
+                count_type: _,
                 array_type,
             } => {
-                dbg!(array_type, t);
-                "".to_string()
+                let t = convert_type(&array_type);
+                dbg!(t);
+
+                Some("".to_string())
             }
-            NativeType::RestBuffer => "protocol_api::encoding::RestBuffer".to_string(),
+            NativeType::RestBuffer => Some("protocol_api::encoding::RestBuffer".to_string()),
             NativeType::NBT => todo!("NBT"),
             NativeType::OptionalNBT => todo!("OptionalNBT"),
             _ => todo!(),
@@ -77,10 +79,10 @@ fn convert_type(t: &PacketDataType) -> String {
             Some(v) => match v {
                 TypeName::Anonymous => panic!("unknown type (anonymous)"),
                 TypeName::Named(name) => match name.to_string().as_ref() {
-                    "string" => "string".to_string(),
-                    "restBuffer" => "protocol_api::encoding::RestBuffer".to_string(),
-                    "UUID" => "uuid::Uuid".to_string(),
-                    "position" => "protocol_api::encoding::position::Position".to_string(),
+                    "string" => Some("string".to_string()),
+                    "restBuffer" => Some("protocol_api::encoding::RestBuffer".to_string()),
+                    "UUID" => Some("uuid::Uuid".to_string()),
+                    "position" => Some("protocol_api::encoding::position::Position".to_string()),
                     v => panic!("unknown type {}", v),
                 },
             },
