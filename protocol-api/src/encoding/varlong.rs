@@ -4,6 +4,8 @@ use super::{CONTINUE_BIT, SEGMENT_BITS};
 
 pub type VarLong = i64;
 
+pub struct DecodingError;
+
 pub fn read_varlong(mut buf: &[u8]) -> Result<VarLong, String> {
     let mut value: i64 = 0;
     let mut position: i8 = 0;

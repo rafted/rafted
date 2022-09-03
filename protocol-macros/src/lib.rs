@@ -61,7 +61,7 @@ fn convert_type(t: &PacketDataType) -> String {
             } => {
                 dbg!(array_type, t);
                 "".to_string()
-            },
+            }
             NativeType::RestBuffer => "protocol_api::encoding::RestBuffer".to_string(),
             NativeType::NBT => todo!("NBT"),
             NativeType::OptionalNBT => todo!("OptionalNBT"),

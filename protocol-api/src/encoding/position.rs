@@ -1,23 +1,35 @@
+use std::num::TryFromIntError;
+
 #[derive(PartialEq, Eq, Debug)]
 pub struct Position {
-    pub x: i64,
-    pub y: i64,
-    pub z: i64,
+    pub x: i32,
+    pub y: i16,
+    pub z: i32,
 }
 
 impl Position {
-    pub fn new(x: i64, y: i64, z: i64) -> Self {
+    pub fn new(x: i32, y: i16, z: i32) -> Self {
         Self { x, y, z }
     }
+    
+    pub fn encode(&self) -> i64 {
+        let x = i64::from(self.x);
+        let y = i64::from(self.y);
+        let z = i64::from(self.z);
 
-    pub fn encode(&self) -> u64 {
-        todo!()
+        ((x & 0x3FFFFFF) << 38) | ((z & 0x3FFFFFF) << 12) | (y & 0xFFF)
     }
 }
 
-impl From<u64> for Position {
-    fn from(_encoded: u64) -> Self {
-        todo!()
+impl TryFrom<i64> for Position {
+    type Error = TryFromIntError;
+
+    fn try_from(encoded: i64) -> Result<Self, Self::Error> {
+        let x: i32 = (encoded >> 38).try_into()?;
+        let y: i16 = (encoded << 52 >> 52).try_into()?;
+        let z: i32 = (encoded << 26 >> 38).try_into()?;
+
+        Ok(Self::new(x, y, z))
     }
 }
 
@@ -30,9 +42,10 @@ mod tests {
         let original = Position::new(100, 432, 912);
         let encoded = original.encode();
 
-        let decoded: Position = encoded.into();
+        let decoded: Result<Position, _> = encoded.try_into();
 
-        assert_eq!(original, decoded);
+        assert!(decoded.is_ok());
+        assert_eq!(original, decoded.unwrap());
     }
 
     #[test]
@@ -40,10 +53,9 @@ mod tests {
         let original = Position::new(-100, -432, -912);
         let encoded = original.encode();
 
-        let decoded: Position = encoded.into();
+        let decoded: Result<Position, _> = encoded.try_into();
 
-        assert_eq!(original, decoded);
+        assert!(decoded.is_ok());
+        assert_eq!(original, decoded.unwrap());
     }
-
-
 }
