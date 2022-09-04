@@ -7,3 +7,4 @@ pub type RestBuffer = Vec<u8>;
 pub mod position;
 pub mod varint;
 pub mod varlong;
+pub mod bitset;
