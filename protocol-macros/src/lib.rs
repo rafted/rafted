@@ -76,7 +76,7 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
             NativeType::RestBuffer => Some("protocol_api::encoding::RestBuffer".to_string()),
             NativeType::NBT => Some("protocol_api::encoding::nbt::NBT".to_string()),
             NativeType::OptionalNBT => {
-                Some("Optional<protocol_api::encoding::nbt::NBT>".to_string())
+                Some("Option<protocol_api::encoding::nbt::NBT>".to_string())
             }
             _ => todo!(),
         },
@@ -111,7 +111,10 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
                         // }
                         None
                     }
-                    "optionalNbt" => Some("Optional<protocol_api::encoding::nbt::NBT>".to_string()),
+                    "optionalNbt" => Some("Option<protocol_api::encoding::nbt::NBT>".to_string()),
+                    "slot" => {
+                        Some("protocol_api::encoding::slot::Slot")
+                    }
                     v => panic!("unknown type {}", v),
                 },
             },
