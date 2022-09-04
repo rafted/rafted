@@ -38,9 +38,10 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
             NativeType::F64 => Some("f64".to_string()),
             NativeType::Uuid => Some("uuid::Uuid".to_string()),
             NativeType::Option(v) => {
-                let t = convert_type(&v);
-
-                Some(format!("Option<{}>", t.unwrap()))
+                match convert_type(&v) {
+                    Some(t) => Some(format!("Option<{}>", t)),
+                    None => None,
+                }
             }
             NativeType::EntityMetadataLoop {
                 end_val: _,
