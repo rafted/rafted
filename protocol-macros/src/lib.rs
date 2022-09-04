@@ -46,7 +46,7 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
                 end_val: _,
                 metadata_type: _,
             } => todo!("EntityMetadataLoop"),
-            NativeType::TopBitSetTerminatedArray(_) => todo!("BitSet") ,
+            NativeType::TopBitSetTerminatedArray(_) => todo!("BitSet"),
             NativeType::BitField(_) => todo!("BitField"),
             NativeType::Container(_) => None,
             NativeType::Switch {
@@ -90,8 +90,12 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
                     "restBuffer" => Some("protocol_api::encoding::RestBuffer".to_string()),
                     "UUID" => Some("uuid::Uuid".to_string()),
                     "position" => Some("protocol_api::encoding::position::Position".to_string()),
-                    "topBitSetTerminatedArray" => Some("protocol_api::encoding::BitSet".to_string()),
-                    "entityMetadata" => Some("protocol_api::encoding::entity_metadata::EntityMetadata".to_string()),
+                    "topBitSetTerminatedArray" => {
+                        Some("protocol_api::encoding::BitSet".to_string())
+                    }
+                    "entityMetadata" => {
+                        Some("protocol_api::encoding::entity_metadata::EntityMetadata".to_string())
+                    }
                     v => panic!("unknown type {}", v),
                 },
             },
