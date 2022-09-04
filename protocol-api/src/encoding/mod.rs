@@ -9,3 +9,4 @@ pub mod entity_metadata;
 pub mod position;
 pub mod varint;
 pub mod varlong;
+pub mod nbt;

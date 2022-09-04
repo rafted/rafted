@@ -72,8 +72,8 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
             }
 
             NativeType::RestBuffer => Some("protocol_api::encoding::RestBuffer".to_string()),
-            NativeType::NBT => todo!("NBT"),
-            NativeType::OptionalNBT => todo!("OptionalNBT"),
+            NativeType::NBT => Some("protocol_api::encoding::nbt::NBT".to_string()),
+            NativeType::OptionalNBT => Some("Optional<protocol_api::encoding::nbt::NBT>".to_string()),
             _ => todo!(),
         },
         PacketDataType::UnknownNativeType(_) => {
