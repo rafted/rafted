@@ -75,9 +75,7 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
 
             NativeType::RestBuffer => Some("RestBuffer".to_string()),
             NativeType::NBT => Some("NBT".to_string()),
-            NativeType::OptionalNBT => {
-                Some("OptionalNBT".to_string())
-            }
+            NativeType::OptionalNBT => Some("OptionalNBT".to_string()),
             _ => todo!(),
         },
         PacketDataType::UnknownNativeType(_) => {
@@ -94,12 +92,8 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
                     "restBuffer" => Some("RestBuffer".to_string()),
                     "UUID" => Some("Uuid".to_string()),
                     "position" => Some("Position".to_string()),
-                    "topBitSetTerminatedArray" => {
-                        Some("BitSet".to_string())
-                    }
-                    "entityMetadata" => {
-                        Some("EntityMetadata".to_string())
-                    }
+                    "topBitSetTerminatedArray" => Some("BitSet".to_string()),
+                    "entityMetadata" => Some("EntityMetadata".to_string()),
                     "chunkBlockEntity" => {
                         // just a thought:
                         //
@@ -112,12 +106,8 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
                         None
                     }
                     "optionalNbt" => Some("OptionalNBT".to_string()),
-                    "slot" => {
-                        Some("Slot".to_string())
-                    },
-                    "particleData" => {
-                        Some("ParticleData".to_string())
-                    },
+                    "slot" => Some("Slot".to_string()),
+                    "particleData" => Some("ParticleData".to_string()),
                     v => panic!("unknown type {}", v),
                 },
             },
