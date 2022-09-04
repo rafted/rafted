@@ -191,7 +191,7 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
                         let actual_type = convert_type(&*field.1);
 
                         if actual_type.is_none() {
-                            continue
+                            continue;
                         }
 
                         let type_ident = Ident::new(&actual_type.unwrap(), Span::call_site());

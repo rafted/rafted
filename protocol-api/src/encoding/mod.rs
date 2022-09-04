@@ -9,9 +9,9 @@ pub mod particle;
 pub mod position;
 pub mod rest_buffer;
 pub mod slot;
-pub mod varint;
-pub mod varlong;
 pub mod string;
 pub mod uuid;
+pub mod varint;
+pub mod varlong;
 
 pub mod prelude;
