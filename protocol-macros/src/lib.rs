@@ -36,9 +36,9 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
             NativeType::I64 => Some("i64".to_string()),
             NativeType::F32 => Some("f32".to_string()),
             NativeType::F64 => Some("f64".to_string()),
-            NativeType::Uuid => Some("uuid::Uuid".to_string()),
+            NativeType::Uuid => Some("Uuid".to_string()),
             NativeType::Option(v) => match convert_type(&v) {
-                Some(t) => Some(format!("Option<{}>", t)),
+                Some(t) => Some(format!("Optional{}", t)), // dont ask
                 None => None,
             },
             NativeType::EntityMetadataLoop {
@@ -73,10 +73,10 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
                 }
             }
 
-            NativeType::RestBuffer => Some("protocol_api::encoding::RestBuffer".to_string()),
-            NativeType::NBT => Some("protocol_api::encoding::nbt::NBT".to_string()),
+            NativeType::RestBuffer => Some("RestBuffer".to_string()),
+            NativeType::NBT => Some("NBT".to_string()),
             NativeType::OptionalNBT => {
-                Some("Option<protocol_api::encoding::nbt::NBT>".to_string())
+                Some("OptionalNBT".to_string())
             }
             _ => todo!(),
         },
@@ -91,14 +91,14 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
                 TypeName::Anonymous => panic!("unknown type (anonymous)"),
                 TypeName::Named(name) => match name.to_string().as_ref() {
                     "string" => Some("string".to_string()),
-                    "restBuffer" => Some("protocol_api::encoding::RestBuffer".to_string()),
-                    "UUID" => Some("uuid::Uuid".to_string()),
-                    "position" => Some("protocol_api::encoding::position::Position".to_string()),
+                    "restBuffer" => Some("RestBuffer".to_string()),
+                    "UUID" => Some("Uuid".to_string()),
+                    "position" => Some("Position".to_string()),
                     "topBitSetTerminatedArray" => {
-                        Some("protocol_api::encoding::BitSet".to_string())
+                        Some("BitSet".to_string())
                     }
                     "entityMetadata" => {
-                        Some("protocol_api::encoding::entity_metadata::EntityMetadata".to_string())
+                        Some("EntityMetadata".to_string())
                     }
                     "chunkBlockEntity" => {
                         // just a thought:
@@ -111,12 +111,12 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
                         // }
                         None
                     }
-                    "optionalNbt" => Some("Option<protocol_api::encoding::nbt::NBT>".to_string()),
+                    "optionalNbt" => Some("OptionalNBT".to_string()),
                     "slot" => {
-                        Some("protocol_api::encoding::slot::Slot".to_string())
+                        Some("Slot".to_string())
                     },
                     "particleData" => {
-                        Some("protocol_api::encoding::particle::ParticleData".to_string())
+                        Some("ParticleData".to_string())
                     },
                     v => panic!("unknown type {}", v),
                 },
@@ -199,9 +199,10 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
 
                         // get the type of the field
                         let actual_type = convert_type(&*field.1);
+                        let type_ident = Ident::new(&actual_type.unwrap(), Span::call_site());
 
                         fields.push(quote! {
-                            pub #name_ident: #actual_type
+                            pub #name_ident: #type_ident
                         });
                     }
                 }
@@ -229,6 +230,8 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
     }
 
     quote! {
+        use protocol_api::encoding::prelude::*;
+
         #(#all_structs)*
     }
     .into()
