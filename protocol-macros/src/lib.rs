@@ -88,7 +88,7 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
             Some(v) => match v {
                 TypeName::Anonymous => panic!("unknown type (anonymous)"),
                 TypeName::Named(name) => match name.to_string().as_ref() {
-                    "string" => Some("string".to_string()),
+                    "string" => Some("String".to_string()),
                     "restBuffer" => Some("RestBuffer".to_string()),
                     "UUID" => Some("Uuid".to_string()),
                     "position" => Some("Position".to_string()),
