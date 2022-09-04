@@ -113,7 +113,7 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
                     }
                     "optionalNbt" => Some("Option<protocol_api::encoding::nbt::NBT>".to_string()),
                     "slot" => {
-                        Some("protocol_api::encoding::slot::Slot")
+                        Some("protocol_api::encoding::slot::Slot".to_string())
                     }
                     v => panic!("unknown type {}", v),
                 },
