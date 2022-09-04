@@ -7,3 +7,4 @@ pub use super::rest_buffer::*;
 pub use super::slot::*;
 pub use super::varint::*;
 pub use super::varlong::*;
+pub use super::string::*;

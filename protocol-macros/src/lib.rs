@@ -38,7 +38,7 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
             NativeType::F64 => Some("f64".to_string()),
             NativeType::Uuid => Some("Uuid".to_string()),
             NativeType::Option(v) => match convert_type(&v) {
-                Some(t) => Some(format!("Optional{}", t)), // dont ask
+                Some(t) => Some(format!("Optional{}", voca_rs::case::pascal_case(&t))), // dont ask
                 None => None,
             },
             NativeType::EntityMetadataLoop {
@@ -211,6 +211,7 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
 
             state_structs.push(quote! {
                 pub mod #direction_name_ident {
+                    use protocol_api::encoding::prelude::*;
                     #(#direction_structs)*
                 }
             });
@@ -225,7 +226,6 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
     }
 
     quote! {
-        use protocol_api::encoding::prelude::*;
 
         #(#all_structs)*
     }

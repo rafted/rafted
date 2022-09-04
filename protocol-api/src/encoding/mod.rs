@@ -11,5 +11,6 @@ pub mod rest_buffer;
 pub mod slot;
 pub mod varint;
 pub mod varlong;
+pub mod string;
 
 pub mod prelude;
