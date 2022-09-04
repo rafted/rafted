@@ -48,7 +48,9 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
             } => todo!("EntityMetadataLoop"),
             NativeType::TopBitSetTerminatedArray(_) => todo!("BitSet"),
             NativeType::BitField(_) => todo!("BitField"),
-            NativeType::Container(_) => todo!("Container"),
+            NativeType::Container(_) => {
+                None
+            },
             NativeType::Switch {
                 compare_to: _,
                 fields: _,
@@ -59,11 +61,18 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
                 count_type: _,
                 array_type,
             } => {
+                // dbg!(array_type);
                 let t = convert_type(&array_type);
-                dbg!(t);
 
-                Some("".to_string())
+                match t {
+                    Some(v) => match v.as_ref() {
+                        "string" => Some("String".to_string()),
+                        _ => None,
+                    },
+                    None => None,
+                }
             }
+
             NativeType::RestBuffer => Some("protocol_api::encoding::RestBuffer".to_string()),
             NativeType::NBT => todo!("NBT"),
             NativeType::OptionalNBT => todo!("OptionalNBT"),
