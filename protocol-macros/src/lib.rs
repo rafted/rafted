@@ -48,16 +48,12 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
             } => todo!("EntityMetadataLoop"),
             NativeType::TopBitSetTerminatedArray(_) => todo!("BitSet"),
             NativeType::BitField(_) => todo!("BitField"),
-            NativeType::Container(_) => {
-                None
-            },
+            NativeType::Container(_) => None,
             NativeType::Switch {
                 compare_to: _,
                 fields: _,
-                default:_ ,
-            } => {
-                None
-            },
+                default: _,
+            } => None,
             NativeType::Void => todo!("Void"),
             NativeType::Array {
                 count_type: _,
