@@ -96,7 +96,18 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
                     }
                     "entityMetadata" => {
                         Some("protocol_api::encoding::entity_metadata::EntityMetadata".to_string())
-                    }
+                    },
+                    "chunkBlockEntity" => {
+                        // just a thought:
+                        //
+                        // struct ChunkBlockEntity {
+                        //      packed: byte, 
+                        //      y: short, 
+                        //      type: varint, 
+                        //      data: NBT, 
+                        // }
+                        None
+                    },
                     v => panic!("unknown type {}", v),
                 },
             },
