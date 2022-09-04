@@ -48,7 +48,10 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
                 metadata_type: _,
             } => todo!("EntityMetadataLoop"),
             NativeType::TopBitSetTerminatedArray(_) => todo!("BitSet"),
-            NativeType::BitField(_) => todo!("BitField"),
+            NativeType::BitField(_) => {
+                // TODO: pls make this daphne :)
+                None
+            },
             NativeType::Container(_) => None,
             NativeType::Switch {
                 compare_to: _,
