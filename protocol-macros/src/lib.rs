@@ -91,6 +91,7 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
                     "UUID" => Some("uuid::Uuid".to_string()),
                     "position" => Some("protocol_api::encoding::position::Position".to_string()),
                     "topBitSetTerminatedArray" => Some("protocol_api::encoding::BitSet".to_string()),
+                    "entityMetadata" => Some("protocol_api::encoding::entity_metadata::EntityMetadata".to_string()),
                     v => panic!("unknown type {}", v),
                 },
             },
