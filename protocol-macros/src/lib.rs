@@ -54,8 +54,10 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
             NativeType::Switch {
                 compare_to: _,
                 fields: _,
-                default: _,
-            } => todo!("Switch"),
+                default:_ ,
+            } => {
+                None
+            },
             NativeType::Void => todo!("Void"),
             NativeType::Array {
                 count_type: _,
