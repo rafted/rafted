@@ -134,6 +134,7 @@ name = "protocol-api"
 version = "0.1.0"
 dependencies = [
  "bytes",
+ "uuid",
 ]
 
 [[package]]

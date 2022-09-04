@@ -8,3 +8,4 @@ pub use super::slot::*;
 pub use super::varint::*;
 pub use super::varlong::*;
 pub use super::string::*;
+pub use super::uuid::*;
