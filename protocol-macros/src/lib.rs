@@ -37,12 +37,10 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
             NativeType::F32 => Some("f32".to_string()),
             NativeType::F64 => Some("f64".to_string()),
             NativeType::Uuid => Some("uuid::Uuid".to_string()),
-            NativeType::Option(v) => {
-                match convert_type(&v) {
-                    Some(t) => Some(format!("Option<{}>", t)),
-                    None => None,
-                }
-            }
+            NativeType::Option(v) => match convert_type(&v) {
+                Some(t) => Some(format!("Option<{}>", t)),
+                None => None,
+            },
             NativeType::EntityMetadataLoop {
                 end_val: _,
                 metadata_type: _,
@@ -51,7 +49,7 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
             NativeType::BitField(_) => {
                 // TODO: pls make this daphne :)
                 None
-            },
+            }
             NativeType::Container(_) => None,
             NativeType::Switch {
                 compare_to: _,
@@ -77,7 +75,9 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
 
             NativeType::RestBuffer => Some("protocol_api::encoding::RestBuffer".to_string()),
             NativeType::NBT => Some("protocol_api::encoding::nbt::NBT".to_string()),
-            NativeType::OptionalNBT => Some("Optional<protocol_api::encoding::nbt::NBT>".to_string()),
+            NativeType::OptionalNBT => {
+                Some("Optional<protocol_api::encoding::nbt::NBT>".to_string())
+            }
             _ => todo!(),
         },
         PacketDataType::UnknownNativeType(_) => {
@@ -99,21 +99,19 @@ fn convert_type(t: &PacketDataType) -> Option<String> {
                     }
                     "entityMetadata" => {
                         Some("protocol_api::encoding::entity_metadata::EntityMetadata".to_string())
-                    },
+                    }
                     "chunkBlockEntity" => {
                         // just a thought:
                         //
                         // struct ChunkBlockEntity {
-                        //      packed: byte, 
-                        //      y: short, 
-                        //      type: varint, 
-                        //      data: NBT, 
+                        //      packed: byte,
+                        //      y: short,
+                        //      type: varint,
+                        //      data: NBT,
                         // }
                         None
-                    },
-                    "optionalNbt" => {
-                        Some("Optional<protocol_api::encoding::nbt::NBT>".to_string())
-                    },
+                    }
+                    "optionalNbt" => Some("Optional<protocol_api::encoding::nbt::NBT>".to_string()),
                     v => panic!("unknown type {}", v),
                 },
             },
