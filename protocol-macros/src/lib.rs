@@ -4,7 +4,7 @@ use minecraft_data_rs::{
 };
 use proc_macro::TokenStream;
 use proc_macro2::{Ident, Span};
-use quote::{quote, format_ident};
+use quote::{format_ident, quote};
 
 type WeirdTokenStream = proc_macro2::TokenStream;
 
@@ -159,7 +159,8 @@ pub fn impl_structs(_input: TokenStream) -> TokenStream {
                 // Format the name to PascalCase so it is appropriate for a struct name
                 let name = &packet.name.trim_start_matches("packet_");
                 let fmt_name = voca_rs::case::pascal_case(name);
-                let name_ident = format_ident!("{}Packet", syn::Ident::new(&fmt_name, Span::call_site()));
+                let name_ident =
+                    format_ident!("{}Packet", syn::Ident::new(&fmt_name, Span::call_site()));
 
                 // Create the list of fields for the struct
                 // God this is messy...
