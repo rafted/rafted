@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 protocol-api = { path = "../protocol-api" }
 protocol-macros = { path = "../protocol-macros" }
+tokio = { version = "1.21.0", features = ["full"] }
 
 [dependencies.uuid]
 version = "1.1.2"
